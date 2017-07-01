@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import * as t from '@/store/mutation-types'
 import { MIC } from '@/lib/MIC'
+import { MQTT } from '@/lib/MQTT'
 
 const state = {
   auth: false,
@@ -17,11 +18,12 @@ const mutations = {
 }
 
 const actions = {
-  auth ({commit}, {username, password}) {
+  auth ({commit}, {username, password, ctx}) {
     return MIC.login(username, password)
       .then(account => {
         commit(t.APP_SET_AUTH, 1)
         commit(t.APP_SET_PAGE, 1)
+        MQTT.init(ctx)
         return Promise.resolve(account)
       })
   },

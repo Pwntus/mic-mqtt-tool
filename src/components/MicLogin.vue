@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     payload () {
-      return { username: this.username, password: this.password }
+      return { username: this.username, password: this.password, ctx: this }
     }
   },
   methods: {

@@ -8,6 +8,7 @@ class ManagedIotCloud {
     this.host = 'startiot.mic.telenorconnexion.com'
     this.AWS = AWS
     this.manifest = null
+    this.account = null
   }
 
   /* Load AWS manifest */
@@ -120,12 +121,7 @@ class ManagedIotCloud {
   }
 
   refreshCredentials () {
-    const account = window.localStorage.getItem('account')
-    
-    if (typeof account === 'undefined')
-      throw new Error('No Refresh Token')
-    
-    const refreshToken = JSON.parse(account).credentials.refreshToken
+    const refreshToken = this.account.credentials.refreshToken
     
     if (!refreshToken)
       throw new Error('No Refresh Token')
@@ -135,7 +131,6 @@ class ManagedIotCloud {
     })
     this.AWS.config.credentials.clearCachedId()
     
-    let accountData = null
     const refreshPayload = {
       action: 'REFRESH',
       attributes: {
@@ -144,10 +139,10 @@ class ManagedIotCloud {
     }
     return this.invoke('AuthLambda', refreshPayload)
       .then(account => {
-        accountData = account
+        this.account = account
         return this.getCredentials(account.credentials.token)
       })
-      .then(() => { return Promise.resolve(accountData) })
+      .then(() => { return Promise.resolve() })
   }
   
   /* Perform steps needed to create a Cognito Identity */
@@ -159,7 +154,6 @@ class ManagedIotCloud {
         /* Invoke an AuthLambda call to obtain an
          * authentication token from MIC.
          */
-        let accountData = null
         const loginPayload = {
           action: 'LOGIN',
           attributes: {
@@ -169,14 +163,14 @@ class ManagedIotCloud {
         }
         return this.invoke('AuthLambda', loginPayload)
           .then(account => {
-            accountData = account
+            this.account = account
 
             /* Get AWS Cognito raised privilege credential
              * using the obtained MIC auth token.
              */
             return this.getCredentials(account.credentials.token)
           })
-          .then(() => { return Promise.resolve(accountData) })
+          .then(() => { return Promise.resolve() })
       })
   }
 }
