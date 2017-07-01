@@ -6,7 +6,7 @@
   )
     .md-toolbar-container
       md-button.md-icon-button.menu(
-        @click="$refs.sidenav.toggle()"
+        @click.native="sidebar.open()"
       )
         md-icon menu
       h2.md-title MIC MQTT Tool

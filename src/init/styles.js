@@ -9,7 +9,7 @@ import '@/assets/css/global.scss'
 Vue.material.registerTheme('default', {
   primary: {
     color: 'light-blue',
-    hue: '400'  
+    hue: '500'  
   },
   accent: 'green',
   warn: 'red',
