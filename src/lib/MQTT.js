@@ -25,24 +25,17 @@ class MqttClient {
 
   reconnect () {
     MIC.refreshCredentials().then(() => {
-      this.mqtt.updateWebsocketCredentials(
-        MIC.AWS.config.credentials.accessKeyId,
-        MIC.AWS.config.credentials.secretAccessKey,
-        MIC.AWS.config.credentials.sessionToken
-      )
+      this.retries++
+      if (this.retries > 2) {
+        this.ctx.bus.$emit('mqtt:message', null, 'Too many retries, closing connection. Is the topic correct?')
+        this.retries = 0
+      } else {
+        this.kill()
+      }
     })
     .catch(e => {
-      // silent
+      console.log(e);
     })
-
-    this.retries++
-    if (this.retries > 2) {
-      this.ctx.bus.$emit('mqtt:message', null, 'Too many retries, closing connection. Is the topic correct?')
-      this.retries = 0
-      this.kill(() => {
-        this.init(this.ctx)
-      })
-    }
   }
 
   connect () {
@@ -70,7 +63,10 @@ class MqttClient {
 
   publish(topic, message) {
     this.mqtt.publish(topic, message, {qos: 1}, (err) => {
-      console.log(err)
+      if (!err)
+        this.ctx.showSnackbar('Payload published')
+      else
+        this.ctx.showSnackbar('Something went wrong')
       this.ctx.bus.$emit('mqtt:publish', topic, message)
     })
   }
@@ -79,8 +75,10 @@ class MqttClient {
     this.ctx.bus.$emit('mqtt:message', topic, message.toString('utf-8'))
   }
 
-  kill (cb = null) {
-    this.mqtt.end(true, cb)
+  kill () {
+    this.mqtt.end(true, () => {
+      this.init(this.ctx)
+    })
   }
 }
 

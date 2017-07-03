@@ -30,7 +30,8 @@ export default {
   },
   created () {
     this.bus.$on('mqtt:connect', () => {
-      this.pushOutput('MQTT client connected, please select a topic')
+      this.output = []
+      this.pushOutput('MQTT client connected, please select a topic.')
     })
     this.bus.$on('mqtt:close', () => {
       this.pushOutput('Connection closed')

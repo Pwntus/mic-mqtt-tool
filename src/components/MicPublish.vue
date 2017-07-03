@@ -2,7 +2,13 @@
 .mic-publish
   .settings
     .md-headline Publish
-    p Topics exposed by Managed IoT Cloud has the structure: <strong>thing-update/domainPathOfTheThing/thingName</strong> <a href="https://docs.telenorconnexion.com/mic/cloud-api/thing-update/#thing-update-publishing" target="_new">Read more here.</a>
+    p Topics exposed by Managed IoT Cloud has the structure: <strong>thing-update/domainPathOfTheThing/thingName</strong>
+      md-button.md-icon-button(
+        href="https://docs.telenorconnexion.com/mic/cloud-api/thing-update/#thing-update-publishing"
+        target="_new"
+      )
+        md-icon open_in_new
+      .clear
 
     md-input-container
       label Topic
@@ -11,7 +17,7 @@
         @keyup.enter.native="publish"
       )
     md-input-container
-      label Payload
+      label JSON Payload
       md-textarea(v-model="payload")
     md-button.md-raised.md-primary(
       @click.native="publish"
@@ -28,13 +34,18 @@ export default {
   data () {
     return {
       topic: 'thing-update/',
-      payload: ''
+      payload: `{
+  "state": {
+    "desired": {
+      "key": "value"
+    }
+  }
+}`
     }
   },
   methods: {
     publish () {
       let message = this.tryParse()
-      console.log('B', message)
 
       if (this.topic !== null || this.topic !== '' && message !== false)
         MQTT.publish(this.topic, message)
@@ -43,15 +54,10 @@ export default {
       let parsed = false
 
       try {
-        console.log('A', this.payload)
         let obj = JSON.parse(this.payload)
         parsed = JSON.stringify(obj)
-
-        //var string = "{firstName:'name1', lastName:'last1'}";
-        //eval('var obj='+string);
-        //alert(obj.firstName);
       } catch (e) {
-        console.log(e)
+        // Silent
       }
 
       return parsed
@@ -59,7 +65,7 @@ export default {
   },
   created () {
     this.bus.$on('mqtt:publish', (t, m) => {
-      console.log('DONE', t, m)
+      // ...
     })
   },
   beforeDestroy () {
@@ -74,12 +80,23 @@ export default {
   display: flex;
   flex-direction: column;
 
-  strong {
-    padding: 2px 6px 3px;
-    font-weight: 400;
-    font-size: 13px;
-    background: rgba(0, 0, 0, .05);
-    border-radius: 3px;
+  .settings {
+    p {
+      line-height: 36px;
+
+      strong {
+        padding: 2px 6px 3px;
+        font-weight: 400;
+        font-size: 13px;
+        background: rgba(0, 0, 0, .05);
+        border-radius: 3px;
+      }
+
+      .md-button {
+        margin-top: 0;
+        display: inline-block;
+      }
+    }
   }
 
   .md-button {
