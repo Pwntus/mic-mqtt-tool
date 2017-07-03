@@ -2,7 +2,7 @@
 .mic-subscribe
   .settings
     .md-headline Subscribe
-    p Topics exposed by Managed IoT Cloud has the structure: <strong>thing-update/domainPathOfTheThing/thingName</strong>. <a href="https://docs.telenorconnexion.com/mic/cloud-api/thing-update/#thing-update-subscription" target="_new">Read more here.</a>
+    p Topics exposed by Managed IoT Cloud has the structure: <strong>thing-update/domainPathOfTheThing/thingName</strong> <a href="https://docs.telenorconnexion.com/mic/cloud-api/thing-update/#thing-update-subscription" target="_new">Read more here.</a>
 
     md-input-container
       label Topic
@@ -48,10 +48,11 @@ export default {
   flex-direction: column;
 
   strong {
-    padding: 2px 6px 4px;
+    padding: 2px 6px 3px;
     font-weight: 400;
     font-size: 13px;
     background: rgba(0, 0, 0, .05);
+    border-radius: 3px;
   }
 
   .md-button {

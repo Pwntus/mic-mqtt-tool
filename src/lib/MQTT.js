@@ -5,6 +5,7 @@ class MqttClient {
   init (ctx) {
     this.ctx = ctx
     this.topic = null
+    this.retries = 0
     this.mqtt = new AWSMqtt({
       region:                 MIC.AWS.config.region,
       accessKeyId:            MIC.AWS.config.credentials.accessKeyId,
@@ -33,6 +34,15 @@ class MqttClient {
     .catch(e => {
       // silent
     })
+
+    this.retries++
+    if (this.retries > 2) {
+      this.ctx.bus.$emit('mqtt:message', null, 'Too many retries, closing connection. Is the topic correct?')
+      this.retries = 0
+      this.kill(() => {
+        this.init(this.ctx)
+      })
+    }
   }
 
   connect () {
@@ -53,23 +63,24 @@ class MqttClient {
 
     this.topic = topic
     this.mqtt.subscribe(topic, {qos: 1}, (err, granted) => {
-      console.log(err, granted)
+      console.log(err)
+      this.ctx.bus.$emit('mqtt:subscribe', topic)
     })
-    this.ctx.bus.$emit('mqtt:subscribe', topic)
   }
 
-  publish(thing, message) {
-    const topic = `thing-update${this.ctx.$store.state['Thing'].thingDomain}${thing}`
-    this.mqtt.publish(topic, message)
+  publish(topic, message) {
+    this.mqtt.publish(topic, message, {qos: 1}, (err) => {
+      console.log(err)
+      this.ctx.bus.$emit('mqtt:publish', topic, message)
+    })
   }
 
   message (topic, message) {
-    console.log("GOT", message)
-    this.ctx.bus.$emit('mqtt:message', topic, JSON.parse(message))
+    this.ctx.bus.$emit('mqtt:message', topic, message.toString('utf-8'))
   }
 
-  kill () {
-    this.mqtt.end(true)
+  kill (cb = null) {
+    this.mqtt.end(true, cb)
   }
 }
 

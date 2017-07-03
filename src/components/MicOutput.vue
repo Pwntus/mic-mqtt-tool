@@ -8,7 +8,6 @@
     )
       .num {{ item.time }}
       .message {{ item.message }}
-      .clear
 </template>
 
 <script>
@@ -31,7 +30,7 @@ export default {
   },
   created () {
     this.bus.$on('mqtt:connect', () => {
-      this.pushOutput('Connected')
+      this.pushOutput('MQTT client connected, please select a topic')
     })
     this.bus.$on('mqtt:close', () => {
       this.pushOutput('Connection closed')
@@ -71,21 +70,20 @@ export default {
       padding: 3px 18px 0;
       font-size: 10px;
       font-family: monospace;
-      display: flex;
 
       &.s {
         background: rgba(0, 0, 0, .025);
       }
 
       .num {
-        width: 30px;
-        margin-right: 12px;
+        max-width: 30px;
         font-weight: bold;
+        position: relative;
         float: left;
       }
 
       .message {
-        flex: 1;
+        padding-left: 42px;
         overflow-wrap: break-word;
         word-wrap: break-word;
         word-break: normal;
@@ -93,7 +91,6 @@ export default {
         hyphens: none;
         -webkit-hyphens: none;
         -moz-hyphens: none;
-        float: left;
       }
     }
   }

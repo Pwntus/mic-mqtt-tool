@@ -5,8 +5,10 @@
   mic-container
     mic-sidenav
     mic-content
-      mic-login(v-if="page == 0")
-      mic-subscribe(v-if="page == 1")
+        mic-login(v-if="page == 0")
+        keep-alive
+          mic-subscribe(v-if="page == 1")
+          mic-publish(v-if="page == 2")
 </template>
 
 <script>
@@ -17,6 +19,7 @@ import MicSidenav from '@/components/MicSidenav.vue'
 import MicContent from '@/components/MicContent.vue'
 import MicLogin from '@/components/MicLogin.vue'
 import MicSubscribe from '@/components/MicSubscribe.vue'
+import MicPublish from '@/components/MicPublish.vue'
 
 export default {
   name: 'App',
@@ -27,7 +30,8 @@ export default {
     MicSidenav,
     MicContent,
     MicLogin,
-    MicSubscribe
+    MicSubscribe,
+    MicPublish
   },
   computed: {
     page () {
