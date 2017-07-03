@@ -1,5 +1,5 @@
 <template lang="pug">
-md-layout.mic-container
+.mic-container
   slot
 </template>
 
@@ -16,5 +16,6 @@ export default {
   margin: 0 auto;
   padding-top: 64px;
   position: relative;
+  display: flex;
 }
 </style>

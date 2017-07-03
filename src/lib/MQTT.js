@@ -65,7 +65,7 @@ class MqttClient {
 
   message (topic, message) {
     console.log("GOT", message)
-    this.ctx.bus.$emit('mqtt:message', topic, message)
+    this.ctx.bus.$emit('mqtt:message', topic, JSON.parse(message))
   }
 
   kill () {

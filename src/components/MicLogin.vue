@@ -1,7 +1,7 @@
 <template lang="pug">
 .mic-login
   .md-headline Login
-  p Please provide your <b>Managed IoT Cloud</b> credentials to start using this tool.
+  p Please provide your Managed IoT Cloud credentials to start using this tool.
 
   md-input-container(md-inline)
     label Username

@@ -1,19 +1,22 @@
 <template lang="pug">
 .mic-subscribe
-  .md-headline Subscribe
-  p Topics exposed by Managed IoT Cloud has the structure: <strong>thing-update/domainPathOfTheThing/thingName</strong>. <a href="https://docs.telenorconnexion.com/mic/cloud-api/thing-update/#thing-update-subscription" target="_new">Read more here.</a>
+  .settings
+    .md-headline Subscribe
+    p Topics exposed by Managed IoT Cloud has the structure: <strong>thing-update/domainPathOfTheThing/thingName</strong>. <a href="https://docs.telenorconnexion.com/mic/cloud-api/thing-update/#thing-update-subscription" target="_new">Read more here.</a>
 
-  md-input-container
-    label Topic
-    md-input(
-      v-model="topic"
-      @keyup.enter.native="subscribe"
+    md-input-container
+      label Topic
+      md-input(
+        v-model="topic"
+        @keyup.enter.native="subscribe"
+      )
+    md-button.md-raised.md-primary(
+      @click.native="subscribe"
     )
-  md-button.md-raised.md-primary(
-    @click.native="subscribe"
-  )
-    span Subscribe
-  .clear
+      span Subscribe
+    .clear
+
+  .md-headline Output
   mic-output
 </template>
 
@@ -41,6 +44,8 @@ export default {
 <style lang="scss">
 .mic-subscribe {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 
   strong {
     padding: 2px 6px 4px;
