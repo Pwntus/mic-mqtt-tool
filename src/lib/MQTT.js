@@ -26,10 +26,9 @@ class MqttClient {
   reconnect () {
     MIC.refreshCredentials().then(() => {
       this.retries++
-      if (this.retries > 2) {
+      if (this.retries >= 2) {
         this.ctx.bus.$emit('mqtt:message', null, 'Too many retries, closing connection. Is the topic correct?')
         this.retries = 0
-      } else {
         this.kill()
       }
     })
@@ -56,7 +55,8 @@ class MqttClient {
 
     this.topic = topic
     this.mqtt.subscribe(topic, {qos: 1}, (err, granted) => {
-      console.log(err)
+      if (err)
+        console.log(err)
       this.ctx.bus.$emit('mqtt:subscribe', topic)
     })
   }
@@ -76,9 +76,10 @@ class MqttClient {
   }
 
   kill () {
-    this.mqtt.end(true, () => {
-      this.init(this.ctx)
-    })
+    if (this.topic !== null)
+      this.mqtt.unsubscribe(this.topic)
+    this.mqtt.end(true)
+    this.init(this.ctx)
   }
 }
 

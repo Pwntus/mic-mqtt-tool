@@ -16,8 +16,9 @@
         v-model="topic"
         @keyup.enter.native="publish"
       )
-    md-input-container
+    md-input-container(:class="{ 'md-input-invalid' : invalid }")
       label JSON Payload
+      span.md-error Invalid
       md-textarea(v-model="payload")
     md-button.md-raised.md-primary(
       @click.native="publish"
@@ -34,6 +35,7 @@ export default {
   data () {
     return {
       topic: 'thing-update/',
+      invalid: false,
       payload: `{
   "state": {
     "desired": {
@@ -43,11 +45,21 @@ export default {
 }`
     }
   },
+  watch: {
+    payload () {
+      this.invalid = false
+    }
+  },
   methods: {
     publish () {
       let message = this.tryParse()
+      if (message == false) {
+        this.invalid = true
+        return
+      }
+      this.invalid = false
 
-      if (this.topic !== null || this.topic !== '' && message !== false)
+      if (this.topic !== null || this.topic !== '')
         MQTT.publish(this.topic, message)
     },
     tryParse () {
