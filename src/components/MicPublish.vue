@@ -93,8 +93,10 @@ export default {
       }
 
       .md-button {
-        margin-top: 0;
-        display: inline-block;
+        margin: 13px;
+        position: absolute;
+        top: 0;
+        right: 0;
       }
     }
   }
